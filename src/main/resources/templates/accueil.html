@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Accueil - Bibliothèque</title>
+<link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/sketchy/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<style>
+    .book-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+    }
+    .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .genre-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    .book-cover {
+        height: 200px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #555;
+        font-size: 2rem;
+    }
+    .author-text {
+        color: #6c757d;
+        font-style: italic;
+    }
+</style>
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <div class="text-center mb-4">
+        <h1 class="display-5 fw-bold text-primary">Bienvenue <span th:text="${client.nom}">Client</span> !</h1>
+        <p class="lead text-muted">Voici la liste de nos livres disponibles</p>
+
+        <div class="d-flex justify-content-center gap-3 mt-3">
+            <a href="/reservations/mes-reservations" class="btn btn-outline-info">
+                <i class="bi bi-calendar-check"></i> Mes réservations
+            </a>
+
+            <a href="/mes-prets" class="btn btn-outline-primary">
+                <i class="bi bi-journal-check"></i> Mes prêts
+            </a>
+
+            <a href="/prolongements/mes" class="btn btn-outline-info mt-3">
+                <i class="bi bi-clock-history"></i> Mes demandes de prolongement
+            </a>
+
+
+            <a href="/logout" class="btn btn-outline-danger">
+                <i class="bi bi-box-arrow-right"></i> Se déconnecter
+            </a>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col" th:each="livre : ${livres}">
+            <div class="card book-card shadow-sm h-100">
+                <div class="book-cover">
+                    <i class="bi bi-book"></i>
+                </div>
+                <span class="badge bg-primary genre-badge" th:text="${livre.genre != null ? livre.genre.nom : 'Non classé'}">Genre</span>
+                <div class="card-body">
+                    <h3 class="card-title h5" th:text="${livre.titre}">Titre du livre</h3>
+                    <p class="author-text mb-2" th:text="${livre.auteur}">Auteur</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <small class="text-muted" th:text="${livre.editeur}">Éditeur</small>
+                        <small class="text-muted" th:text="${#temporals.format(livre.datePublication, 'dd/MM/yyyy')}">01/01/2025</small>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a th:href="@{|/reservations/livre/${livre.id}|}" class="btn btn-outline-primary btn-sm">
+                        Réserver
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

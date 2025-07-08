@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Liste des clients</title>
+<link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/sketchy/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <div class="text-center mb-4">
+        <h1 class="fw-bold text-primary">Liste des clients</h1>
+        <a href="/livres" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left"></i> Retour aux livres
+        </a>
+    </div>
+
+    <div th:if="${message}" class="alert alert-success text-center" th:text="${message}">message</div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>#</th>
+                    <th>Nom</th>
+                    <th>Date d’enregistrement</th>
+                    <th>Fin abonnement</th>
+                    <th>Abonné?</th>
+                    <th>Pénalité</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="client, iter : ${clients}" 
+                    th:classappend="${client.penalise} ? 'table-danger'">
+                    <td th:text="${iter.count}">1</td>
+                    <td th:text="${client.nom}">Nom</td>
+                    <td th:text="${#temporals.format(client.dateEnregistrement, 'dd/MM/yyyy')}">01/01/2025</td>
+                    <td th:text="${#temporals.format(client.finAbonnement, 'dd/MM/yyyy')}">01/01/2025</td>
+                    <td th:text="${client.actif}">Actif</td>
+                    <td>
+                        <span th:if="${client.penalise}" th:text="'Du ' + ${#temporals.format(client.dateDebutPenalite, 'dd/MM/yyyy')} + ' au ' + ${#temporals.format(client.dateFinPenalite, 'dd/MM/yyyy')}">
+                            01/01/2025 - 10/01/2025
+                        </span>
+                        <span th:if="${!client.penalise}">-</span>
+                    </td>
+
+                    <td>
+                        <form th:action="@{|/clients/${client.id}/toggle-actif|}" method="post">
+                            <button type="submit"
+                                    th:classappend="${client.actif} ? 'btn btn-danger btn-sm' : 'btn btn-success btn-sm'">
+                                <span th:text="${client.actif} ? 'Révoquer' : 'Abonner'"></span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
